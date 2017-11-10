@@ -10,7 +10,6 @@ function jwtFromAuthHeader(header) {
 }
 
 module.exports = (req, res) => {
-  console.log(req.headers);
   if (req.headers.origin) {
     // Allow CORS
     res.setHeader("Access-Control-Allow-Origin", req.headers.origin); // Not safe!
@@ -37,9 +36,8 @@ module.exports = (req, res) => {
   }
 
   if (req.url === "/me") {
-    // Get the current user, which
+    // Get the current user
     const token = jwtFromAuthHeader(req.headers.authorization);
-    console.log(token);
     const payload = token && jwt.verify(token, secretKey);
     if (payload) {
       return {

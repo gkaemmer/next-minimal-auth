@@ -22,12 +22,8 @@ function logout() {
 
 export default class Index extends React.Component {
   static async getInitialProps({ res, req }) {
-    try {
-      const { user } = await authenticate(req);
-      return { user };
-    } catch (e) {
-      return {};
-    }
+    const user = await authenticate(req);
+    return { user };
   }
 
   render() {

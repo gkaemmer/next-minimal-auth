@@ -18,13 +18,9 @@ function redirect(url, res) {
 
 export default class About extends React.Component {
   static async getInitialProps({ res, req }) {
-    try {
-      const { user } = await authenticate(req);
-      return { user };
-    } catch (e) {
-      redirect("/", res);
-      return {};
-    }
+    const user = await authenticate(req);
+    if (!user) redirect("/", res);
+    return { user };
   }
 
   render() {
