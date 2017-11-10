@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "micro-dev": "^1.4.0"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^8.1.0"
+  }
+}
