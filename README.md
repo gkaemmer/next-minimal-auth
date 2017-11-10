@@ -1,6 +1,6 @@
 # Next Minimal Auth
 
-This project demonstrates a very small amount of code to allow Next.js authenticate requests on both the server and the client. This is done by saving a JWT in a cookie on the Next.js host.
+This project demonstrates a very small amount of code to allow Next.js to authenticate requests on both the server and the client. This is done by saving a JWT in a cookie on the Next.js host.
 
 The JWT is created by a separate Micro server (`server/index.js`).
 
