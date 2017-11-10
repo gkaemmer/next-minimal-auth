@@ -1,8 +1,7 @@
-import Layout from "./_layout";
 import Link from "next/link";
 import fetch from "isomorphic-unfetch";
 import Router from "next/router";
-import cookie from "cookie";
+import authenticate from "./_authenticate";
 
 function redirect(url, res) {
   if (res) {
@@ -19,31 +18,25 @@ function redirect(url, res) {
 
 export default class About extends React.Component {
   static async getInitialProps({ res, req }) {
-    console.log(res);
-    let result = await fetch("http://localhost:3004/me", {
-      headers: {
-        jwt: req
-          ? cookie.parse(req.headers.cookie || "").jwt
-          : localStorage.getItem("jwt")
-      }
-    });
-    if (result.status === 401) redirect("/", res);
-    result = await result.json();
-    return { sessionId: result.sessionId };
+    try {
+      const { user } = await authenticate(req);
+      return { user };
+    } catch (e) {
+      redirect("/", res);
+      return {};
+    }
   }
 
   render() {
     return (
-      <Layout>
-        <div>
-          About.js<br />
-          {this.props.sessionId}
-          <br />
-          <Link href="/">
-            <a>Index</a>
-          </Link>
-        </div>
-      </Layout>
+      <div>
+        About.js<br />
+        {this.props.user.id}
+        <br />
+        <Link href="/">
+          <a>Index</a>
+        </Link>
+      </div>
     );
   }
 }

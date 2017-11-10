@@ -1,36 +1,49 @@
-const cookie = require("cookie");
 const { send } = require("micro");
 const jwt = require("jsonwebtoken");
+const uuid = require("uuid/v4");
 
 const secretKey = "SOME_SECRET_KEY";
-const cookieName = "my_jwt_cookie";
+
+function jwtFromAuthHeader(header) {
+  if (!header) return null;
+  return header.split("Bearer ")[1];
+}
 
 module.exports = (req, res) => {
-  // Allow CORS
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3003");
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  res.setHeader("Access-Control-Allow-Headers", "jwt");
-  if (req.method === "OPTIONS") return {};
+  console.log(req.headers);
+  if (req.headers.origin) {
+    // Allow CORS
+    res.setHeader("Access-Control-Allow-Origin", req.headers.origin); // Not safe!
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader("Access-Control-Allow-Headers", "Authorization");
+    if (req.method === "OPTIONS") return {};
+  }
 
   if (req.url === "/login") {
-    // Assume login completed successfully, create JWT
+    // Login logic would go here: check passwords, grab access token from
+    // oauth provider, etc
+
+    // But let's assume login completed successfully and create JWT
+    const user = { id: uuid() };
     const payload = {
-      sessionId: "Session created at " + new Date().toISOString()
+      sub: user.id
     };
     const token = jwt.sign(payload, secretKey);
     send(res, 200, {
-      sessionId: payload.sessionId,
+      user,
       jwt: token
     });
     return;
   }
 
   if (req.url === "/me") {
-    const token = req.headers.jwt;
+    // Get the current user, which
+    const token = jwtFromAuthHeader(req.headers.authorization);
+    console.log(token);
     const payload = token && jwt.verify(token, secretKey);
     if (payload) {
       return {
-        sessionId: payload.sessionId
+        user: { id: payload.sub }
       };
     } else {
       send(res, 401, { error: "Not logged in" });

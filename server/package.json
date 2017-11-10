@@ -3,6 +3,7 @@
     "micro-dev": "^1.4.0"
   },
   "dependencies": {
-    "jsonwebtoken": "^8.1.0"
+    "jsonwebtoken": "^8.1.0",
+    "uuid": "^3.1.0"
   }
 }
